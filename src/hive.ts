@@ -1,6 +1,6 @@
 import * as SRP from 'amazon-user-pool-srp-client';
-import fetch from 'node-fetch';
-import { post, AWS_IDPS } from './api';
+import * as Fetch from './fetch';
+import { callAuth, AWS_IDPS } from './api';
 
 // Everybody seems to be in the same pool
 const AWS_IDP_USER_POOLID = 'SamNfoWtf';
@@ -30,7 +30,7 @@ export class Hive {
     const srp = new SRP.SRPClient(userPoolId);
     const SRP_A = srp.calculateA();
 
-    const { ChallengeName, ChallengeParameters, Session } = await post(
+    const { ChallengeName, ChallengeParameters, Session } = await callAuth(
       AWS_IDPS.AUTH,
       {
         ClientId: clientId,
@@ -57,7 +57,7 @@ export class Hive {
       dateNow
     );
 
-    const { AuthenticationResult } = await post(
+    const { AuthenticationResult } = await callAuth(
       AWS_IDPS.RESPOND_AUTH_CHALLENGE,
       {
         ClientId: clientId,
@@ -79,25 +79,15 @@ export class Hive {
 
   public async refresh() {
     try {
-      const resp = await fetch(`${BEEKEEPER_URL}/cognito/refresh-token`, {
-        method: 'POST',
+      const data = await Fetch.post(`${BEEKEEPER_URL}/cognito/refresh-token`, {
         body: JSON.stringify({
           token: this.token,
           refreshToken: this.refreshToken,
           accessToken: this.accessToken,
         }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
       });
 
-      if (resp.status > 399) {
-        throw new Error(
-          `Request Error (code: ${resp.status}): ${resp.statusText}`
-        );
-      }
-
-      return resp.json();
+      return data;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -105,21 +95,14 @@ export class Hive {
 
   public async products() {
     try {
-      const resp = await fetch(`${BEEKEEPER_URL}/products`, {
+      const data = await Fetch.get(`${BEEKEEPER_URL}/products`, {
         // @ts-ignore
         headers: {
-          'Content-Type': 'application/json',
           Authorization: this.token,
         },
       });
 
-      if (resp.status > 399) {
-        throw new Error(
-          `Request Error (code: ${resp.status}): ${resp.statusText}`
-        );
-      }
-
-      return resp.json();
+      return data;
     } catch (error) {
       throw new Error(error.message);
     }
