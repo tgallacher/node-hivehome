@@ -107,4 +107,23 @@ export class Hive {
       throw new Error(error.message);
     }
   }
+
+  // TODO: Need for more than 1 device?
+  public async getCurrentTemp() {
+    try {
+      const products = await this.products();
+
+      const heatingProduct: Record<string, any> | undefined = products
+        .filter(p => p.type === 'heating')
+        .shift();
+
+      if (!heatingProduct) {
+        throw new Error(
+          `No heating product found! Number of all products found = ${products.length}`
+        );
+      }
+
+      return heatingProduct?.props?.temperature;
+    } catch (error) {}
+  }
 }
