@@ -29,7 +29,7 @@ export class Heating extends Products {
   public async get() {
     const products = await super.get();
 
-    return products.filter(p => p.type === 'heating');
+    return products.filter((p) => p.type === 'heating');
   }
 
   public async history(
@@ -68,7 +68,7 @@ export class Heating extends Products {
   private transformHistory(
     data: HiveHomeApiHistoryDataPoint[]
   ): HiveSDKHistoryDataPoint[] {
-    return data.map(d => ({
+    return data.map((d) => ({
       timestamp: Math.round(d.date / 1000),
       termpareature: Number.parseFloat(Number(d.temperature).toFixed(2)),
     }));

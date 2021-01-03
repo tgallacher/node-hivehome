@@ -1,4 +1,4 @@
-import merge from 'lodash.merge'
+import merge from 'lodash.merge';
 
 import type { Auth } from './auth';
 import { fetch } from './utils/fetch';
@@ -20,9 +20,9 @@ export class HiveFetch {
 
     const reqOpts = merge(options, {
       headers: {
-        'Authorization': this.auth.token,
-      }
-    })
+        Authorization: this.auth.token,
+      },
+    });
 
     return fetch(url, reqOpts);
   }
@@ -44,9 +44,9 @@ export class HiveFetch {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
-        'Authorization': this.auth.token,
-      }
-    })
+        Authorization: this.auth.token,
+      },
+    });
 
     return fetch(url, reqOpts);
   }

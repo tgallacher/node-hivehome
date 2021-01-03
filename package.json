@@ -44,10 +44,15 @@
       "limit": "250 KB"
     }
   ],
+  "resolutions": {
+    "prettier": "^2.x.x"
+  },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.9.1",
     "@types/node-fetch": "^2.5.7",
+    "eslint-plugin-prettier": "^3.3.0",
     "husky": "^4.3.6",
+    "prettier": "^2.2.1",
     "size-limit": "^4.9.1",
     "tsdx": "^0.14.1",
     "tslib": "^2.0.3",
