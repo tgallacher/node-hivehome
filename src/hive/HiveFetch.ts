@@ -1,7 +1,7 @@
 import merge from 'lodash.merge'
 
-import type { Auth } from '../auth';
-import { fetch } from './fetch';
+import type { Auth } from './auth';
+import { fetch } from './utils/fetch';
 
 export class HiveFetch {
   private auth: Auth;

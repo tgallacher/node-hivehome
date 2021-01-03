@@ -1,5 +1,5 @@
 import { BEEKEEPER_URL } from './constants';
-import { RemoteResource } from './utils/AbstractRemoteResource';
+import { RemoteResource } from './AbstractRemoteResource';
 
 export class Products extends RemoteResource {
   // todo: add ability to filter product. See Filters type
