@@ -1,6 +1,8 @@
 import * as SRP from 'amazon-user-pool-srp-client';
+import jwtdecode from 'jwt-decode';
+import { differenceInMinutes, isPast } from 'date-fns';
 
-import * as Fetch from './utils/fetch';
+import { HiveFetch } from './utils/fetch';
 import { BEEKEEPER_URL } from './constants';
 
 // Everybody seems to be in the same pool
@@ -18,6 +20,9 @@ export class Auth {
   private refreshToken: undefined | string;
   private accessToken: undefined | string;
   public token: undefined | string;
+
+  private tokenExp?: number; // unix
+  private tokenValidForMins?: number;
 
   private email: undefined | string;
 
@@ -77,43 +82,92 @@ export class Auth {
       }
     );
 
-    this.refreshToken = AuthenticationResult.RefreshToken;
-    this.accessToken = AuthenticationResult.AccessToken;
-    this.token = AuthenticationResult.IdToken;
+    this.refreshToken = AuthenticationResult.RefreshToken as string;
+    this.accessToken = AuthenticationResult.AccessToken as string;
+    this.token = AuthenticationResult.IdToken as string;
+
+    // parse token expiry
+    const { exp, iat } = jwtdecode(this.token) as {
+      phone_number_verified: boolean;
+      locale: string;
+      email: string;
+      aud: string; // audience (same as client ID)
+      exp: number; // expiry
+      iat: number; // issued at
+    };
+
+    this.tokenExp = exp;
+    this.tokenValidForMins = differenceInMinutes(exp, iat);
+
+    return this;
   }
 
   public async refresh() {
     try {
-      const data = await Fetch.post(`${BEEKEEPER_URL}/cognito/refresh-token`, {
-        body: JSON.stringify({
-          token: this.token,
-          refreshToken: this.refreshToken,
-          accessToken: this.accessToken,
-        }),
-      });
+      const data = await HiveFetch.post(
+        `${BEEKEEPER_URL}/cognito/refresh-token`,
+        {
+          body: JSON.stringify({
+            token: this.token,
+            refreshToken: this.refreshToken,
+            accessToken: this.accessToken,
+          }),
+        }
+      );
 
-      return data;
+      // todo: update token on refresh
+      this.token = data;
+
+      return this;
     } catch (error) {
       throw new Error(error.message);
     }
+  }
+
+  // Refresh token if auth is near expiry
+  public async checkTokenAndRefresh() {
+    return !this.isTokenValid() ? this : this.refresh();
   }
 
   //
   // PRIVATE
   //
 
-  private async callAuth(awsTargetLabel: string, body: Partial<{}>) {
-    try {
-      const data = await Fetch.post(IDP_URL, body, {
-        headers: {
-          'Content-Type': 'application/x-amz-json-1.1',
-          'X-Amz-Target': awsTargetLabel,
-        },
-      });
-
-      return data;
-    } catch (error) {
-      throw new Error(error.message);
+  private isTokenExpired() {
+    if (!this.tokenExp) {
+      throw new Error(
+        'Unknown token Expiry. Did you forget to run `login(password)`?'
+      );
     }
+
+    return isPast(this.tokenExp);
+  }
+
+  private isTokenValid() {
+    if (!this.tokenExp) {
+      throw new Error(
+        'Unknown token Expiry. Did you forget to run `login(password)`?'
+      );
+    }
+
+    const unix_now = Math.round(Date.now() / 1000);
+    const mins2Expiry = differenceInMinutes(unix_now, this.tokenExp);
+
+    return (
+      !this.isTokenExpired() &&
+      mins2Expiry >= (this.tokenValidForMins as number) * 0.25
+    );
+  }
+
+  private async callAuth(awsTargetLabel: string, body: Partial<{}>) {
+    await this.checkTokenAndRefresh();
+    const data = await HiveFetch.post(IDP_URL, body, {
+      headers: {
+        'Content-Type': 'application/x-amz-json-1.1',
+        'X-Amz-Target': awsTargetLabel,
+      },
+    });
+
+    return data;
   }
 }

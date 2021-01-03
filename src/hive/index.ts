@@ -1,49 +1,17 @@
 import * as Fetch from './utils/fetch';
 
 import { Auth } from './auth';
+import { Products } from './products';
 
 const BEEKEEPER_URL = 'https://beekeeper-uk.hivehome.com/1.0';
 
 export class Hive {
-  private normaliseData: boolean = true;
-
-  private auth: Auth;
+  public auth: Auth;
+  public products: Products;
 
   constructor(email: string) {
     this.auth = new Auth(email);
-  }
-
-  public shouldNormaliseData(flag: boolean) {
-    this.normaliseData = flag;
-
-    return this;
-  }
-
-  public async getProducts() {
-    try {
-      const data = await Fetch.get(`${BEEKEEPER_URL}/products`, {
-        // @ts-ignore
-        headers: {
-          Authorization: this.auth.token,
-        },
-      });
-
-      return this.normaliseData ? this.transformProductsData(data) : data;
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
-
-  // Normalise key data points
-  private transformProductsData(products: Array<Record<string, any>>) {
-    return products.map(p => ({
-      type: p.type,
-      deviceId: p.id,
-      timestamp: Math.round(new Date().getTime() / 1000),
-      online: p.props?.online,
-      model: p.props?.model,
-      temperature: p.props?.temperature,
-    }));
+    this.products = new Products(this.auth);
   }
 
   public async getCurrentTemp() {
