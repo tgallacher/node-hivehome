@@ -1,6 +1,6 @@
+import { differenceInMinutes, isPast } from 'date-fns';
 import * as SRP from 'amazon-user-pool-srp-client';
 import jwtdecode from 'jwt-decode';
-import { differenceInMinutes, isPast } from 'date-fns';
 
 import { HiveFetch } from './utils/fetch';
 import { BEEKEEPER_URL } from './constants';
@@ -12,8 +12,8 @@ const AWS_IDP_USER_POOLCLIENT = '3rl4i0ajrmtdm8sbre54p9dvd9';
 const IDP_URL = 'https://cognito-idp.eu-west-1.amazonaws.com';
 
 enum AWS_IDPS {
-  AUTH = 'AWSCognitoIdentityProviderService.InitiateAuth',
   RESPOND_AUTH_CHALLENGE = 'AWSCognitoIdentityProviderService.RespondToAuthChallenge',
+  AUTH = 'AWSCognitoIdentityProviderService.InitiateAuth',
 }
 
 export class Auth {
@@ -30,6 +30,7 @@ export class Auth {
     this.email = email;
   }
 
+  // todo: add support for providing pass via ENV vars?
   public async login(password: string) {
     const userPoolId =
       process.env.AWS_COGNITO_IDS_USERPOOLID?.split('_')[1] ??
@@ -102,26 +103,29 @@ export class Auth {
     return this;
   }
 
+  /**
+   * Refresh auth token
+   */
   public async refresh() {
-    try {
-      const data = await HiveFetch.post(
-        `${BEEKEEPER_URL}/cognito/refresh-token`,
-        {
-          body: JSON.stringify({
-            token: this.token,
-            refreshToken: this.refreshToken,
-            accessToken: this.accessToken,
-          }),
-        }
-      );
+    const data = await HiveFetch.fetch(
+      `${BEEKEEPER_URL}/cognito/refresh-token`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          token: this.token,
+          refreshToken: this.refreshToken,
+          accessToken: this.accessToken,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-      // todo: update token on refresh
-      this.token = data;
+    // fixme: update token on refresh
+    this.token = data;
 
-      return this;
-    } catch (error) {
-      throw new Error(error.message);
-    }
+    return this;
   }
 
   // Refresh token if auth is near expiry
@@ -160,8 +164,9 @@ export class Auth {
   }
 
   private async callAuth(awsTargetLabel: string, body: Partial<{}>) {
-    await this.checkTokenAndRefresh();
-    const data = await HiveFetch.post(IDP_URL, body, {
+    const data = await HiveFetch.fetch(IDP_URL, {
+      method: 'POST',
+      body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/x-amz-json-1.1',
         'X-Amz-Target': awsTargetLabel,

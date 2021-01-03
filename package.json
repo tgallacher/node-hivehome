@@ -57,6 +57,7 @@
     "amazon-user-pool-srp-client": "^1.0.4",
     "date-fns": "^2.16.1",
     "jwt-decode": "^3.1.2",
+    "lodash.merge": "^4.6.2",
     "node-fetch": "^2.6.1"
   }
 }
