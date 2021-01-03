@@ -1,4 +1,4 @@
-import type { HiveFetch } from './fetch';
+import type { HiveFetch } from './HiveFetch';
 
 /**
  * Represents a baseline for any resource from Hivehome's API
