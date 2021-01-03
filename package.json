@@ -37,11 +37,11 @@
   "size-limit": [
     {
       "path": "dist/node-hivehome.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "250 KB"
     },
     {
       "path": "dist/node-hivehome.esm.js",
-      "limit": "10 KB"
+      "limit": "250 KB"
     }
   ],
   "devDependencies": {
