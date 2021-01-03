@@ -97,8 +97,15 @@ export class Auth {
       iat: number; // issued at
     };
 
+    if (!exp || !iat) {
+      throw new Error(
+        '[Auth] Token decoding error; token timestamps are undefined.'
+      );
+    }
+
     this.tokenExp = exp;
-    this.tokenValidForMins = differenceInMinutes(exp, iat);
+    // date-fns requires `unix_ms`
+    this.tokenValidForMins = differenceInMinutes(exp * 1000, iat * 1000);
 
     return this;
   }
@@ -153,22 +160,23 @@ export class Auth {
   private isTokenExpired() {
     if (!this.tokenExp) {
       throw new Error(
-        '[Auth] Unknown token Expiry. Did you forget to run `.login(password)`?'
+        '[Auth] Unknown token Expiry. Did you forget to run `.auth.login(password)`?'
       );
     }
 
-    return isPast(this.tokenExp);
+    // date-fns requires `unix_ms`
+    return isPast(this.tokenExp * 1000);
   }
 
   private isTokenDueRefresh() {
     if (!this.tokenExp) {
       throw new Error(
-        '[Auth] Unknown token Expiry. Did you forget to run `.login(password)`?'
+        '[Auth] Unknown token Expiry. Did you forget to run `.auth.login(password)`?'
       );
     }
 
-    const unix_now = Math.round(Date.now() / 1000);
-    const mins2Expiry = differenceInMinutes(unix_now, this.tokenExp);
+    // date-fns requires `unix_ms`
+    const mins2Expiry = differenceInMinutes(this.tokenExp * 1000, Date.now());
 
     return (
       mins2Expiry <= 15 ||
