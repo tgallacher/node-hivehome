@@ -1,6 +1,6 @@
 import * as SRP from 'amazon-user-pool-srp-client';
-import * as Fetch from './fetch';
-import { callAuth, AWS_IDPS } from './api';
+import * as Fetch from './utils/fetch';
+import { callAuth, AWS_IDPS } from './utils/api';
 
 // Everybody seems to be in the same pool
 const AWS_IDP_USER_POOLID = 'SamNfoWtf';
