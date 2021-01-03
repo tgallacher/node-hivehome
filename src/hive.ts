@@ -16,9 +16,17 @@ export class Hive {
   private accessToken: undefined | string;
   private token: undefined | string;
 
+  private normaliseData: boolean = true;
+
   constructor(email: string, password: string) {
     this.email = email;
     this.password = password;
+  }
+
+  public shouldNormaliseData(flag: boolean) {
+    this.normaliseData = flag;
+
+    return this;
   }
 
   public async login() {
@@ -93,7 +101,7 @@ export class Hive {
     }
   }
 
-  public async products() {
+  public async getProducts() {
     try {
       const data = await Fetch.get(`${BEEKEEPER_URL}/products`, {
         // @ts-ignore
@@ -102,20 +110,31 @@ export class Hive {
         },
       });
 
-      return data;
+      return this.normaliseData ? this.transformProductsData(data) : data;
     } catch (error) {
       throw new Error(error.message);
     }
   }
 
-  // TODO: Need for more than 1 device?
+  // Normalise key data points
+  private transformProductsData(products: Array<Record<string, any>>) {
+    return products.map(p => ({
+      type: p.type,
+      deviceId: p.id,
+      timestamp: Math.round(new Date().getTime() / 1000),
+      online: p.props?.online,
+      model: p.props?.model,
+      temperature: p.props?.temperature,
+    }));
+  }
+
   public async getCurrentTemp() {
     try {
-      const products = await this.products();
+      const products = await this.getProducts();
 
       const heatingProduct: Record<string, any> | undefined = products
-        .filter(p => p.type === 'heating')
-        .shift();
+        .filter(p => p.type === 'heating') // Only `heating` products give us the temp
+        .shift(); // TODO: Need to support more than 1 device?
 
       if (!heatingProduct) {
         throw new Error(
@@ -123,7 +142,10 @@ export class Hive {
         );
       }
 
-      return heatingProduct?.props?.temperature;
-    } catch (error) {}
+      // return heatingProduct?.props?.temperature;
+      return heatingProduct;
+    } catch (error) {
+      throw error;
+    }
   }
 }
