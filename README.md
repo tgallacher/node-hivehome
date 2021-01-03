@@ -1,103 +1,95 @@
-# TSDX User Guide
+# Node-Hivehome
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+An (_unofficial_) NodeJS SDK for [Hivehome](https://www.hivehome.com) smarthome products.
 
-> This TSDX setup is meant for developing libraries (not apps!) that can be published to NPM. If you’re looking to build a Node app, you could use `ts-node-dev`, plain `ts-node`, or simple `tsc`.
+> ⚠️ This uses Hivehome's web API, which isn't officially designated for public consumption. Therefore, this may break randomly if the Hivehome team make breaking changes. Nevertheless, we'll try and fix things as fast as possible.
 
-> If you’re new to TypeScript, checkout [this handy cheatsheet](https://devhints.io/typescript)
+> ⚠️ This is still a WIP, and I'm still working to expand the feature support for the range of Hivehome's smarthome platform. Create an [issue]() to help me identify which parts I should focus on first.
 
-## Commands
+**TOC**
 
-TSDX scaffolds your new library inside `/src`.
+<!-- TOC -->
 
-To run TSDX, use:
+- [Installation](#installation)
+- [API](#api)
+  - [Auth](#auth)
+    - [Login](#login)
+    - [Refresh](#refresh)
+  - [Heating](#heating)
+    - [Get](#get)
+    - [History](#history)
+- [Related](#related)
 
-```bash
-npm start # or yarn start
-```
+<!-- /TOC -->
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+## Installation
 
-To do a one-off build, use `npm run build` or `yarn build`.
+> TODO Publish RC to NPM
 
-To run tests, use `npm test` or `yarn test`.
+## API
 
-## Configuration
+### Auth
 
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
+Authenticate with Hivehome's API. Required before doing anything else with the SDK.
 
-### Jest
+Currently, Hivehome's authentication token is valid for **1hr**. This library will check the validity of your auth token before making any request and will refresh the token if it is nearing expiry.
 
-Jest tests are set up to run with `npm test` or `yarn test`.
+The only limitation is that a request will need to be made every **45min** (currently) to ensure the token is refreshed before it expires.
 
-### Bundle Analysis
+If your set up ensure this condition is met, then the MFA only needs to be disabled for the first authentication call, and can then be re-enabled. The token refresh flow doesn't re-trigger the MFA flow. _This is required until this library adds support for the MFA flow for the first auth flow_.
 
-[`size-limit`](https://github.com/ai/size-limit) is set up to calculate the real cost of your library with `npm run size` and visualize the bundle with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
-```
-
-### Rollup
-
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
-
-### TypeScript
-
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
-
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
+#### Login
 
 ```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
+const { Hive } = require('./dist');
 
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
-}
+const email = '<email>';
+const pass = '<password>';
+
+const hive = new Hive(email);
+
+// Note: Doesn't support MFA yet.
+// Need to disable in Hivehome's App for first login.
+await hive.auth.login(pass);
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
+#### Refresh
 
-## Module Formats
+As mentioned above, the library will auto refresh the token before making any request to Hivehome's API, assuming the current token is still active. You can use this to manually trigger a token refresh.
 
-CJS, ESModules, and UMD module formats are supported.
+```js
+await hive.auth.refresh();
+```
 
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
+### Heating
 
-## Named Exports
+Get Heating product(s) data. The returned data is intentionally normalised in order to decouple the internal dependencies of this data structure from the upstream API.
 
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
+See the [Product type](https://github.com/tgallacher/node-hivehome/blob/main/src/hive/types.ts#L17) for details of the data structure.
 
-## Including Styles
+#### Get
 
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
+```js
+// ...following on from above Auth code
 
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
+// normalised data response
+const heatingData = await hive.heating.get();
+```
 
-## Publishing to NPM
+#### History
 
-We recommend using [np](https://github.com/sindresorhus/np).
+Defaults to fetching data for the last `24hrs`, with a `30min` interval.
+
+```js
+const heatingHistory = await hive.heating.history('<product_id>');
+```
+
+Supply an object to configure the range and sampling interval. See [HistoryOption type](https://github.com/tgallacher/node-hivehome/blob/main/src/hive/heating.ts#L8) to see how to configure the request.
+
+```js
+const heatingHistory = await hive.heating.history('<product_id>', options);
+```
+
+## Related
+
+- [Pyhive/Pyhiveapi](https://github.com/Pyhive/Pyhiveapi) - Python library interface for Hivehome
