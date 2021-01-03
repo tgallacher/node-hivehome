@@ -1,5 +1,6 @@
 import { BEEKEEPER_URL } from './constants';
 import { RemoteResource } from './AbstractRemoteResource';
+import type { Product } from './types'
 
 export class Products extends RemoteResource {
   // todo: add ability to filter product. See Filters type
@@ -15,7 +16,7 @@ export class Products extends RemoteResource {
    * Normalise data + decouple internals from upstream changes
    * @param products
    */
-  private transform(products: Array<Record<string, any>>) {
+  private transform(products: Array<Record<string, any>>): Product[] {
     // todo: check response for other product types
     // this is currently specific for `type=heating`
     return products.map(p => ({
