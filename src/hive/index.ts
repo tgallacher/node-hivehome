@@ -1,4 +1,4 @@
-import { HiveFetch } from './utils/fetch';
+import { HiveFetch } from './utils/HiveFetch';
 
 import { Auth } from './auth';
 import { Products } from './products';

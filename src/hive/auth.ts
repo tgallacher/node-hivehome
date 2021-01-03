@@ -2,7 +2,7 @@ import { differenceInMinutes, isPast } from 'date-fns';
 import * as SRP from 'amazon-user-pool-srp-client';
 import jwtdecode from 'jwt-decode';
 
-import { HiveFetch } from './utils/fetch';
+import { fetch } from './utils/fetch';
 import { BEEKEEPER_URL } from './constants';
 
 // Everybody seems to be in the same pool
@@ -107,20 +107,17 @@ export class Auth {
    * Refresh auth token
    */
   public async refresh() {
-    const data = await HiveFetch.fetch(
-      `${BEEKEEPER_URL}/cognito/refresh-token`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          token: this.token,
-          refreshToken: this.refreshToken,
-          accessToken: this.accessToken,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const data = await fetch(`${BEEKEEPER_URL}/cognito/refresh-token`, {
+      method: 'POST',
+      body: JSON.stringify({
+        token: this.token,
+        refreshToken: this.refreshToken,
+        accessToken: this.accessToken,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
     // fixme: update token on refresh
     this.token = data;
@@ -164,7 +161,7 @@ export class Auth {
   }
 
   private async callAuth(awsTargetLabel: string, body: Partial<{}>) {
-    const data = await HiveFetch.fetch(IDP_URL, {
+    const data = await fetch(IDP_URL, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {

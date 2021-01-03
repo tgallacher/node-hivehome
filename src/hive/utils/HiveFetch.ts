@@ -1,7 +1,7 @@
-import fetch from 'node-fetch';
 import merge from 'lodash.merge'
 
 import type { Auth } from '../auth';
+import { fetch } from './fetch';
 
 export class HiveFetch {
   private auth: Auth;
@@ -24,7 +24,7 @@ export class HiveFetch {
       }
     })
 
-    return HiveFetch.fetch(url, reqOpts);
+    return fetch(url, reqOpts);
   }
 
   /**
@@ -48,31 +48,6 @@ export class HiveFetch {
       }
     })
 
-    return HiveFetch.fetch(url, reqOpts);
-  }
-
-  /**
-   * Native fetch with basic HTTP error handling.
-   *
-   * Note: Used inside Auth module
-   * @param url
-   * @param options
-   */
-  static async fetch(url: string, options: Partial<RequestInit> = {}) {
-    const reqOpts = merge({
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    }, options);
-
-    const resp = await fetch(url, reqOpts);
-
-    if (resp.status > 399) {
-      throw new Error(
-        `Request Error (code: ${resp.status}): ${resp.statusText}`
-      );
-    }
-
-    return resp.json();
+    return fetch(url, reqOpts);
   }
 }
