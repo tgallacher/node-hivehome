@@ -107,27 +107,43 @@ export class Auth {
    * Refresh auth token
    */
   public async refresh() {
-    const data = await fetch(`${BEEKEEPER_URL}/cognito/refresh-token`, {
-      method: 'POST',
-      body: JSON.stringify({
-        token: this.token,
-        refreshToken: this.refreshToken,
-        accessToken: this.accessToken,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const { token, refreshToken, accessToken } = await fetch(
+      `${BEEKEEPER_URL}/cognito/refresh-token`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          refreshToken: this.refreshToken,
+          accessToken: this.accessToken,
+          token: this.token,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-    // fixme: update token on refresh
-    this.token = data;
+    if (!token || !refreshToken || !accessToken) {
+      throw new Error(
+        '[Auth] Refresh API endpoint has changed response structure. Unable to find refreshed tokens'
+      );
+    }
+
+    this.token = token;
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
 
     return this;
   }
 
   // Refresh token if auth is near expiry
   public async checkTokenAndRefresh() {
-    return !this.isTokenValid() ? this : this.refresh();
+    if (this.isTokenExpired()) {
+      throw new Error(
+        '[Auth] token has expired. Re-run `.auth.login(password)`.'
+      );
+    }
+
+    return this.isTokenDueRefresh() ? this.refresh() : this;
   }
 
   //
@@ -137,17 +153,17 @@ export class Auth {
   private isTokenExpired() {
     if (!this.tokenExp) {
       throw new Error(
-        'Unknown token Expiry. Did you forget to run `login(password)`?'
+        '[Auth] Unknown token Expiry. Did you forget to run `.login(password)`?'
       );
     }
 
     return isPast(this.tokenExp);
   }
 
-  private isTokenValid() {
+  private isTokenDueRefresh() {
     if (!this.tokenExp) {
       throw new Error(
-        'Unknown token Expiry. Did you forget to run `login(password)`?'
+        '[Auth] Unknown token Expiry. Did you forget to run `.login(password)`?'
       );
     }
 
@@ -155,8 +171,8 @@ export class Auth {
     const mins2Expiry = differenceInMinutes(unix_now, this.tokenExp);
 
     return (
-      !this.isTokenExpired() &&
-      mins2Expiry >= (this.tokenValidForMins as number) * 0.25
+      mins2Expiry <= 15 ||
+      mins2Expiry <= (this.tokenValidForMins as number) * 0.33
     );
   }
 
