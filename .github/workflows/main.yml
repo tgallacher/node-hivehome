@@ -29,3 +29,13 @@ jobs:
 
       - name: Build
         run: yarn build
+
+      - name: Docs
+        if: contains(github.ref, 'main')
+        run: |
+          yarn gen:docs
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add docs/
+          git commit -m "docs: update typedocs"
+          git push
