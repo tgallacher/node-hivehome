@@ -31,7 +31,7 @@ jobs:
         run: yarn build
 
       - name: Docs
-        if: contains(github.ref, 'main')
+        if: contains(github.ref, 'main') && matrix.node == '14'
         run: |
           yarn gen:docs
           git config user.name github-actions
