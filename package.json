@@ -1,5 +1,6 @@
 {
   "name": "node-hivehome",
+  "description": "An (unofficial) NodeJS SDK for Hivehome smarthome products",
   "author": "Tom Gallacher",
   "version": "0.1.0",
   "license": "MIT",
