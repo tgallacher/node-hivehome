@@ -59,95 +59,70 @@
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
 				<a href="#node-hivehome" id="node-hivehome" style="color: inherit; text-decoration: none;">
-					<h1>Node-Hivehome</h1>
+					<h1>node-Hivehome</h1>
 				</a>
 				<p>An (<em>unofficial</em>) NodeJS SDK for <a href="https://www.hivehome.com">Hivehome</a> smarthome products.</p>
 				<blockquote>
-					<p>⚠️ This uses Hivehome&#39;s web API, which isn&#39;t officially designated for public consumption. Therefore, this may break randomly if the Hivehome team make breaking changes. Nevertheless, we&#39;ll try and fix things as fast as possible.</p>
+					<p>This uses Hivehome&#39;s web API, which isn&#39;t officially designated for public consumption. Therefore, this may break randomly if the Hivehome team make breaking changes. Nevertheless, we&#39;ll try and fix things as fast as possible.</p>
 				</blockquote>
 				<blockquote>
-					<p>⚠️ This is still a WIP, and I&#39;m still working to expand the feature support for the range of Hivehome&#39;s smarthome platform. Create an <a href="">issue</a> to help me identify which parts I should focus on first.</p>
+					<p>⚠️ This is still a WIP, and we&#39;re still working to expand the feature support for the range of Hivehome&#39;s smarthome platform. Start a <a href="https://github.com/tgallacher/node-hivehome/discussions">discussion</a> to help me identify which parts should be focused next.</p>
 				</blockquote>
 				<p><strong>TOC</strong></p>
 				<!-- TOC -->
 				<ul>
 					<li><a href="#installation">Installation</a></li>
-					<li><a href="#api">API</a><ul>
-							<li><a href="#auth">Auth</a><ul>
-									<li><a href="#login">Login</a></li>
-									<li><a href="#refresh">Refresh</a></li>
-								</ul>
-							</li>
-							<li><a href="#heating">Heating</a><ul>
-									<li><a href="#get">Get</a></li>
-									<li><a href="#history">History</a></li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-					<li><a href="#related">Related</a></li>
+					<li><a href="#documentation">Documentation</a></li>
+					<li><a href="#quick-start">Quick Start</a></li>
+					<li><a href="#todo">TODO</a></li>
+					<li><a href="#alternatives">Alternative(s)</a></li>
 				</ul>
 				<!-- /TOC -->
 				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 					<h2>Installation</h2>
 				</a>
-				<blockquote>
-					<p>TODO Publish RC to NPM</p>
-				</blockquote>
-				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
-					<h2>API</h2>
+				<pre><code class="language-sh"><span style="color: #000000">$ yarn add node-hivehome </span><span style="color: #008000"># or, npm install node-hivehome</span>
+</code></pre>
+				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
+					<h2>Documentation</h2>
 				</a>
-				<a href="#auth" id="auth" style="color: inherit; text-decoration: none;">
-					<h3>Auth</h3>
+				<p>The documentation can be viewed at <a href="https://tgallacher.github.io/node-hivehome/">https://tgallacher.github.io/node-hivehome/</a>. This is auto-generated from the code, using <a href="https://typedoc.org/">typedoc</a>.</p>
+				<a href="#quick-start" id="quick-start" style="color: inherit; text-decoration: none;">
+					<h2>Quick Start</h2>
 				</a>
-				<p>Authenticate with Hivehome&#39;s API. Required before doing anything else with the SDK.</p>
-				<p>Currently, Hivehome&#39;s authentication token is valid for <strong>1hr</strong>. This library will check the validity of your auth token before making any request and will refresh the token if it is nearing expiry.</p>
-				<p>The only limitation is that a request will need to be made every <strong>45min</strong> (currently) to ensure the token is refreshed before it expires.</p>
-				<p>If your set up ensure this condition is met, then the MFA only needs to be disabled for the first authentication call, and can then be re-enabled. The token refresh flow doesn&#39;t re-trigger the MFA flow. <em>This is required until this library adds support for the MFA flow for the first auth flow</em>.</p>
-				<a href="#login" id="login" style="color: inherit; text-decoration: none;">
-					<h4>Login</h4>
-				</a>
-				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">Hive</span><span style="color: #000000"> } = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;./dist&#039;</span><span style="color: #000000">);</span>
+				<p>As a quick example for getting going, with your email and password you can view the heating product(s) and their current state (e.g. temperature) by running the following:</p>
+				<pre><code class="language-js"><span style="color: #008000">// index.js</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">Hivehome</span><span style="color: #000000"> } = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;node-hivehome&#039;</span><span style="color: #000000">);</span>
 
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">email</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;&lt;email&gt;&#039;</span><span style="color: #000000">;</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pass</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;&lt;password&gt;&#039;</span><span style="color: #000000">;</span>
+<span style="color: #000000">(</span><span style="color: #0000FF">async</span><span style="color: #000000"> ()</span><span style="color: #0000FF">=&gt;</span><span style="color: #000000">{</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">hive</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Hivehome</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;hello@example.com&#039;</span><span style="color: #000000">);</span>
+<span style="color: #000000">  </span><span style="color: #008000">// Note: Doesn&#039;t support MFA yet. Need to disable in Hivehome&#039;s App for first login.</span>
+<span style="color: #000000">  </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">auth</span><span style="color: #000000">.</span><span style="color: #795E26">login</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;supersecretpassword&#039;</span><span style="color: #000000">);</span>
 
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">hive</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Hive</span><span style="color: #000000">(</span><span style="color: #001080">email</span><span style="color: #000000">);</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">heatingData</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">heating</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">();</span>
 
-<span style="color: #008000">// Note: Doesn&#039;t support MFA yet.</span>
-<span style="color: #008000">// Need to disable in Hivehome&#039;s App for first login.</span>
-<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">auth</span><span style="color: #000000">.</span><span style="color: #795E26">login</span><span style="color: #000000">(</span><span style="color: #001080">pass</span><span style="color: #000000">);</span>
+<span style="color: #000000">  </span><span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #267F99">JSON</span><span style="color: #000000">.</span><span style="color: #795E26">stringify</span><span style="color: #000000">(</span><span style="color: #001080">heatingData</span><span style="color: #000000">, </span><span style="color: #0000FF">null</span><span style="color: #000000">, </span><span style="color: #098658">2</span><span style="color: #000000">));</span>
+<span style="color: #000000">})()</span>
 </code></pre>
-				<a href="#refresh" id="refresh" style="color: inherit; text-decoration: none;">
-					<h4>Refresh</h4>
+				<p>Once installed, and with the above script, running:</p>
+				<pre><code class="language-sh"><span style="color: #000000">node index.js</span>
+</code></pre>
+				<p>should print out the current state of all Hivehome <em>heating</em> product(s) registered to the account used for logging in.</p>
+				<a href="#todo" id="todo" style="color: inherit; text-decoration: none;">
+					<h2>TODO</h2>
 				</a>
-				<p>As mentioned above, the library will auto refresh the token before making any request to Hivehome&#39;s API, assuming the current token is still active. You can use this to manually trigger a token refresh.</p>
-				<pre><code class="language-js"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">auth</span><span style="color: #000000">.</span><span style="color: #795E26">refresh</span><span style="color: #000000">();</span>
-</code></pre>
-				<a href="#heating" id="heating" style="color: inherit; text-decoration: none;">
-					<h3>Heating</h3>
-				</a>
-				<p>Get Heating product(s) data. The returned data is intentionally normalised in order to decouple the internal dependencies of this data structure from the upstream API.</p>
-				<p>See the <a href="https://github.com/tgallacher/node-hivehome/blob/main/src/hive/types.ts#L17">Product type</a> for details of the data structure.</p>
-				<a href="#get" id="get" style="color: inherit; text-decoration: none;">
-					<h4>Get</h4>
-				</a>
-				<pre><code class="language-js"><span style="color: #008000">// ...following on from above Auth code</span>
-
-<span style="color: #008000">// normalised data response</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">heatingData</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">heating</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">();</span>
-</code></pre>
-				<a href="#history" id="history" style="color: inherit; text-decoration: none;">
-					<h4>History</h4>
-				</a>
-				<p>Defaults to fetching data for the last <code>24hrs</code>, with a <code>30min</code> interval.</p>
-				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">heatingHistory</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">heating</span><span style="color: #000000">.</span><span style="color: #795E26">history</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;&lt;product_id&gt;&#039;</span><span style="color: #000000">);</span>
-</code></pre>
-				<p>Supply an object to configure the range and sampling interval. See <a href="https://github.com/tgallacher/node-hivehome/blob/main/src/hive/heating.ts#L8">HistoryOption type</a> to see how to configure the request.</p>
-				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">heatingHistory</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">heating</span><span style="color: #000000">.</span><span style="color: #795E26">history</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;&lt;product_id&gt;&#039;</span><span style="color: #000000">, </span><span style="color: #001080">options</span><span style="color: #000000">);</span>
-</code></pre>
-				<a href="#related" id="related" style="color: inherit; text-decoration: none;">
-					<h2>Related</h2>
+				<ul>
+					<li><input disabled="" type="checkbox"> Add support for MFA flow</li>
+					<li><input disabled="" type="checkbox"> Add support for <code>devices</code></li>
+					<li><input checked="" disabled="" type="checkbox"> Add support for <code>heating</code> products (excl. <code>trv</code>s)</li>
+					<li><input disabled="" type="checkbox"> Add support for <code>light</code> products</li>
+					<li><input disabled="" type="checkbox"> Add support for <code>camera</code> products</li>
+					<li><input disabled="" type="checkbox"> Add support for <code>sensor</code> products</li>
+					<li><input disabled="" type="checkbox"> Add support for <code>plug</code> products</li>
+					<li><input disabled="" type="checkbox"> Add support for <code>shield</code> products</li>
+				</ul>
+				<a href="#alternatives" id="alternatives" style="color: inherit; text-decoration: none;">
+					<h2>Alternative(s)</h2>
 				</a>
 				<ul>
 					<li><a href="https://github.com/Pyhive/Pyhiveapi">Pyhive/Pyhiveapi</a> - Python library interface for Hivehome</li>
