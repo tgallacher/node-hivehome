@@ -13,6 +13,7 @@ An (_unofficial_) NodeJS SDK for [Hivehome](https://www.hivehome.com) smarthome 
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [Quick Start](#quick-start)
+- [TODO](#todo)
 - [Alternative(s)](#alternatives)
 
 <!-- /TOC -->
@@ -53,6 +54,17 @@ node index.js
 ```
 
 should print out the current state of all Hivehome _heating_ product(s) registered to the account used for logging in.
+
+## TODO
+
+- [ ] Add support for MFA flow
+- [ ] Add support for `devices`
+- [x] Add support for `heating` products (excl. `trv`s)
+- [ ] Add support for `light` products
+- [ ] Add support for `camera` products
+- [ ] Add support for `sensor` products
+- [ ] Add support for `plug` products
+- [ ] Add support for `shield` products
 
 ## Alternative(s)
 
