@@ -1,11 +1,13 @@
 {
+  "name": "node-hivehome",
+  "author": "Tom Gallacher",
   "version": "0.1.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "module": "dist/node-hivehome.esm.js",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "engines": {
     "node": ">=14"
@@ -20,34 +22,10 @@
     "analyze": "size-limit --why",
     "gen:docs": "typedoc"
   },
-  "peerDependencies": {},
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "name": "node-hivehome",
-  "author": "Tom Gallacher",
-  "module": "dist/node-hivehome.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/node-hivehome.cjs.production.min.js",
-      "limit": "250 KB"
-    },
-    {
-      "path": "dist/node-hivehome.esm.js",
-      "limit": "250 KB"
-    }
-  ],
   "resolutions": {
     "prettier": "^2.x.x"
   },
+  "peerDependencies": {},
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.9.1",
     "@types/node-fetch": "^2.5.7",
@@ -67,5 +45,26 @@
     "lodash.merge": "^4.6.2",
     "node-fetch": "^2.6.1",
     "query-string": "^6.13.8"
-  }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "size-limit": [
+    {
+      "path": "dist/node-hivehome.cjs.production.min.js",
+      "limit": "250 KB"
+    },
+    {
+      "path": "dist/node-hivehome.esm.js",
+      "limit": "250 KB"
+    }
+  ]
 }
