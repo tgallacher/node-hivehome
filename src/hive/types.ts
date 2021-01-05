@@ -1,3 +1,7 @@
+/**
+ * @packageDocumentation
+ * @module Hivehome.Types
+ */
 export type deviceTypes = 'heating';
 
 // // Common public Class api

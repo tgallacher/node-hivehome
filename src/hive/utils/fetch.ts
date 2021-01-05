@@ -1,3 +1,7 @@
+/**
+ * @packageDocumentation
+ * @hidden
+ */
 import nodefetch from 'node-fetch';
 import merge from 'lodash.merge';
 

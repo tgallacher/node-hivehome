@@ -1,7 +1,11 @@
+/**
+ * @packageDocumentation
+ * @hidden
+ */
 import type { HiveFetch } from './HiveFetch';
 
 /**
- * Represents a baseline for any resource from Hivehome's API
+ * Baseline for any resource from Hivehome's API
  */
 export abstract class RemoteResource {
   protected fetch: HiveFetch;

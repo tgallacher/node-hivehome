@@ -1,10 +1,22 @@
+/**
+ * @packageDocumentation
+ * @module Hivehome.Products
+ */
 import { BEEKEEPER_URL } from './constants';
 import { RemoteResource } from './AbstractRemoteResource';
 import type { Product } from './types';
 
+/**
+ * Generic Products resource(s) wrapper for Hivehome's API.
+ *
+ * @note Consider making internal only
+ */
 export class Products extends RemoteResource {
   // todo: add ability to filter product. See Filters type
   // public async get(filters?: Partial<Filters>) {
+  /**
+   * GET all registered product(s) for the current account. Response normalised.
+   */
   public async get() {
     const products = await this.fetch.get(`${BEEKEEPER_URL}/products`);
 

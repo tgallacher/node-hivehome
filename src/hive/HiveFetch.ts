@@ -1,8 +1,16 @@
+/**
+ * @packageDocumentation
+ * @hidden
+ * @module Hivehome.HiveFetch
+ */
 import merge from 'lodash.merge';
 
 import type { Auth } from './auth';
 import { fetch } from './utils/fetch';
 
+/**
+ * Helper class built into Hivehome resource classes to simplify API fetching, with built in basic HTTP response error handling and token near-expiry check and refresh.
+ */
 export class HiveFetch {
   private auth: Auth;
 
@@ -11,9 +19,7 @@ export class HiveFetch {
   }
 
   /**
-   * Authenticated GET request with built in token refresh, if required.
-   * @param url
-   * @param options
+   * Authenticated GET request, with built in token check + refresh.
    */
   async get(url: string, options?: Partial<RequestInit>) {
     await this.auth.checkTokenAndRefresh();
@@ -28,10 +34,7 @@ export class HiveFetch {
   }
 
   /**
-   * Authenticated POST request with built in token refresh, if required.
-   * @param url
-   * @param body
-   * @param options
+   * Authenticated POST request, with built in token check + refresh.
    */
   async post(
     url: string,

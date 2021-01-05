@@ -1,0 +1,209 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>node-hivehome</title>
+	<meta name="description" content="Documentation for node-hivehome">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">node-hivehome</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>node-hivehome</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#node-hivehome" id="node-hivehome" style="color: inherit; text-decoration: none;">
+					<h1>Node-Hivehome</h1>
+				</a>
+				<p>An (<em>unofficial</em>) NodeJS SDK for <a href="https://www.hivehome.com">Hivehome</a> smarthome products.</p>
+				<blockquote>
+					<p>⚠️ This uses Hivehome&#39;s web API, which isn&#39;t officially designated for public consumption. Therefore, this may break randomly if the Hivehome team make breaking changes. Nevertheless, we&#39;ll try and fix things as fast as possible.</p>
+				</blockquote>
+				<blockquote>
+					<p>⚠️ This is still a WIP, and I&#39;m still working to expand the feature support for the range of Hivehome&#39;s smarthome platform. Create an <a href="">issue</a> to help me identify which parts I should focus on first.</p>
+				</blockquote>
+				<p><strong>TOC</strong></p>
+				<!-- TOC -->
+				<ul>
+					<li><a href="#installation">Installation</a></li>
+					<li><a href="#api">API</a><ul>
+							<li><a href="#auth">Auth</a><ul>
+									<li><a href="#login">Login</a></li>
+									<li><a href="#refresh">Refresh</a></li>
+								</ul>
+							</li>
+							<li><a href="#heating">Heating</a><ul>
+									<li><a href="#get">Get</a></li>
+									<li><a href="#history">History</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li><a href="#related">Related</a></li>
+				</ul>
+				<!-- /TOC -->
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<blockquote>
+					<p>TODO Publish RC to NPM</p>
+				</blockquote>
+				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
+					<h2>API</h2>
+				</a>
+				<a href="#auth" id="auth" style="color: inherit; text-decoration: none;">
+					<h3>Auth</h3>
+				</a>
+				<p>Authenticate with Hivehome&#39;s API. Required before doing anything else with the SDK.</p>
+				<p>Currently, Hivehome&#39;s authentication token is valid for <strong>1hr</strong>. This library will check the validity of your auth token before making any request and will refresh the token if it is nearing expiry.</p>
+				<p>The only limitation is that a request will need to be made every <strong>45min</strong> (currently) to ensure the token is refreshed before it expires.</p>
+				<p>If your set up ensure this condition is met, then the MFA only needs to be disabled for the first authentication call, and can then be re-enabled. The token refresh flow doesn&#39;t re-trigger the MFA flow. <em>This is required until this library adds support for the MFA flow for the first auth flow</em>.</p>
+				<a href="#login" id="login" style="color: inherit; text-decoration: none;">
+					<h4>Login</h4>
+				</a>
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">Hive</span><span style="color: #000000"> } = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;./dist&#039;</span><span style="color: #000000">);</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">email</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;&lt;email&gt;&#039;</span><span style="color: #000000">;</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">pass</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;&lt;password&gt;&#039;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">hive</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Hive</span><span style="color: #000000">(</span><span style="color: #001080">email</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// Note: Doesn&#039;t support MFA yet.</span>
+<span style="color: #008000">// Need to disable in Hivehome&#039;s App for first login.</span>
+<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">auth</span><span style="color: #000000">.</span><span style="color: #795E26">login</span><span style="color: #000000">(</span><span style="color: #001080">pass</span><span style="color: #000000">);</span>
+</code></pre>
+				<a href="#refresh" id="refresh" style="color: inherit; text-decoration: none;">
+					<h4>Refresh</h4>
+				</a>
+				<p>As mentioned above, the library will auto refresh the token before making any request to Hivehome&#39;s API, assuming the current token is still active. You can use this to manually trigger a token refresh.</p>
+				<pre><code class="language-js"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">auth</span><span style="color: #000000">.</span><span style="color: #795E26">refresh</span><span style="color: #000000">();</span>
+</code></pre>
+				<a href="#heating" id="heating" style="color: inherit; text-decoration: none;">
+					<h3>Heating</h3>
+				</a>
+				<p>Get Heating product(s) data. The returned data is intentionally normalised in order to decouple the internal dependencies of this data structure from the upstream API.</p>
+				<p>See the <a href="https://github.com/tgallacher/node-hivehome/blob/main/src/hive/types.ts#L17">Product type</a> for details of the data structure.</p>
+				<a href="#get" id="get" style="color: inherit; text-decoration: none;">
+					<h4>Get</h4>
+				</a>
+				<pre><code class="language-js"><span style="color: #008000">// ...following on from above Auth code</span>
+
+<span style="color: #008000">// normalised data response</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">heatingData</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">heating</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">();</span>
+</code></pre>
+				<a href="#history" id="history" style="color: inherit; text-decoration: none;">
+					<h4>History</h4>
+				</a>
+				<p>Defaults to fetching data for the last <code>24hrs</code>, with a <code>30min</code> interval.</p>
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">heatingHistory</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">heating</span><span style="color: #000000">.</span><span style="color: #795E26">history</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;&lt;product_id&gt;&#039;</span><span style="color: #000000">);</span>
+</code></pre>
+				<p>Supply an object to configure the range and sampling interval. See <a href="https://github.com/tgallacher/node-hivehome/blob/main/src/hive/heating.ts#L8">HistoryOption type</a> to see how to configure the request.</p>
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">heatingHistory</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">hive</span><span style="color: #000000">.</span><span style="color: #001080">heating</span><span style="color: #000000">.</span><span style="color: #795E26">history</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;&lt;product_id&gt;&#039;</span><span style="color: #000000">, </span><span style="color: #001080">options</span><span style="color: #000000">);</span>
+</code></pre>
+				<a href="#related" id="related" style="color: inherit; text-decoration: none;">
+					<h2>Related</h2>
+				</a>
+				<ul>
+					<li><a href="https://github.com/Pyhive/Pyhiveapi">Pyhive/Pyhiveapi</a> - Python library interface for Hivehome</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/hivehome.html">Hivehome</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/hivehome_auth.html">Hivehome.<wbr>Auth</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/hivehome_heating.html">Hivehome.<wbr>Heating</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/hivehome_products.html">Hivehome.<wbr>Products</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/hivehome_types.html">Hivehome.<wbr>Types</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
