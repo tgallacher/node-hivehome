@@ -136,9 +136,7 @@ export class Heating extends Products {
     return this.transformHistory(data);
   }
 
-  private transformHistory(
-    data: ApiHistoryDataPoint[]
-  ): SdkHistoryDataPoint[] {
+  private transformHistory(data: ApiHistoryDataPoint[]): SdkHistoryDataPoint[] {
     return data.map((d) => ({
       timestamp: Math.round(d.date / 1000),
       termpareature: Number.parseFloat(Number(d.temperature).toFixed(2)),
