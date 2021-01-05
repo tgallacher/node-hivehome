@@ -34,10 +34,10 @@ As a quick example for getting going, with your email and password you can view 
 
 ```js
 // index.js
-const { Hive } = require('./dist');
+const { Hivehome } = require('node-hivehome');
 
 (async ()=>{
-  const hive = new Hive('hello@example.com');
+  const hive = new Hivehome('hello@example.com');
   // Note: Doesn't support MFA yet. Need to disable in Hivehome's App for first login.
   await hive.auth.login('supersecretpassword');
 
