@@ -5,7 +5,7 @@
  */
 import merge from 'lodash.merge';
 
-import type { Auth } from './auth';
+import type { Auth } from './Auth';
 import { fetch } from './utils/fetch';
 
 /**

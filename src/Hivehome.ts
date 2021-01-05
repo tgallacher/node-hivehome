@@ -4,9 +4,9 @@
  */
 import { HiveFetch } from './HiveFetch';
 
-import { Auth } from './auth';
-import { Products } from './products';
-import { Heating } from './heating';
+import { Auth } from './Auth';
+import { Products } from './Products';
+import { Heating } from './Heating';
 
 /**
  * Main Hivehome SDK entrypoint.

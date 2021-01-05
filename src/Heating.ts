@@ -7,7 +7,7 @@ import { sub, getTime } from 'date-fns';
 import qs from 'query-string';
 
 import { BEEKEEPER_URL } from './constants';
-import { Products } from './products';
+import { Products } from './Products';
 
 export interface SdkHistoryOptions {
   start: number; // unix_ms
