@@ -2,4 +2,4 @@
  * @packageDocumentation
  * @hidden
  */
-export * from './hive';
+export * from './Hivehome';
