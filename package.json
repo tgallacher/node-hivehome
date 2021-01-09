@@ -7,6 +7,10 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/node-hivehome.esm.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tgallacher/node-hivehome.git"
+  },
   "files": [
     "dist"
   ],
@@ -22,7 +26,8 @@
     "size": "size-limit",
     "analyze": "size-limit --why",
     "gen:docs": "typedoc",
-    "todos": "leasot -Sx --ignore 'public/**/*,node_modules/**/*' '**/*.{ts,tsx,js,jsx}'"
+    "todos": "leasot -Sx --ignore 'public/**/*,node_modules/**/*' '**/*.{ts,tsx,js,jsx}'",
+    "release": "semantic-release"
   },
   "resolutions": {
     "prettier": "^2.x.x"
@@ -40,6 +45,7 @@
     "husky": "^4.3.6",
     "leasot": "^11.5.0",
     "prettier": "^2.2.1",
+    "semantic-release": "^17.3.1",
     "size-limit": "^4.9.1",
     "tsdx": "^0.14.1",
     "tslib": "^2.0.3",
