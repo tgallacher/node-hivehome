@@ -17,11 +17,12 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test",
-    "lint": "tsdx lint",
+    "lint": "tsdx lint \".\"",
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why",
-    "gen:docs": "typedoc"
+    "gen:docs": "typedoc",
+    "todos": "leasot -Sx --ignore 'public/**/*,node_modules/**/*' '**/*.{ts,tsx,js,jsx}'"
   },
   "resolutions": {
     "prettier": "^2.x.x"
@@ -30,8 +31,11 @@
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.9.1",
     "@types/node-fetch": "^2.5.7",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.3.0",
     "husky": "^4.3.6",
+    "leasot": "^11.5.0",
     "prettier": "^2.2.1",
     "size-limit": "^4.9.1",
     "tsdx": "^0.14.1",
@@ -51,12 +55,6 @@
     "hooks": {
       "pre-commit": "tsdx lint"
     }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
   },
   "size-limit": [
     {

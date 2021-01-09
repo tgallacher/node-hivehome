@@ -1,0 +1,4 @@
+{
+  "*.ts": ["eslint --config .eslintrc.js --ext js,jsx,ts,tsx --fix", "git add"],
+  "*.md*": ["prettier --write", "git add"],
+}

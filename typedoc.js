@@ -1,9 +1,9 @@
 module.exports = {
-  entryPoints: ["./src"],
-  exclude: ["**/constants.ts", "./src/types.d.ts"],
+  entryPoints: ['./src'],
+  exclude: ['**/constants.ts', './src/types.d.ts'],
   excludePrivate: true,
   excludeProtected: true,
-  out: "./docs",
+  out: './docs',
   // theme: "minimal",
   disableSources: true,
-}
+};

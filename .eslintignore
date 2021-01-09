@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.github/
+docs/
+
+# Ignored by default
+!.eslintrc.js
