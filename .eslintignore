@@ -3,5 +3,5 @@ dist/
 .github/
 docs/
 
-# Ignored by default
-!.eslintrc.js
+# Root ignored by default
+!*.js
