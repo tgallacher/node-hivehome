@@ -17,11 +17,11 @@ export class Products extends RemoteResource {
   /**
    * GET all registered product(s) for the current account. Response normalised.
    */
-  public async get() {
+  public async get(): Promise<Product[]> {
     const products = await this.fetch.get(`${BEEKEEPER_URL}/products`);
 
     // todo: Add support to toggle transform?
-    return this.transform(products);
+    return this.transform(products as Array<Record<string, any>>);
   }
 
   /**
@@ -31,7 +31,7 @@ export class Products extends RemoteResource {
   private transform(products: Array<Record<string, any>>): Product[] {
     // todo: check response for other product types
     // this is currently specific for `type=heating`
-    return products.map((p) => ({
+    return products.map(p => ({
       id: p.id,
       type: p.type,
       timestamp: Math.round(new Date().getTime() / 1000),

@@ -39,7 +39,7 @@ export class HiveFetch {
   async post(
     url: string,
     body: Partial<Record<string, unknown>>,
-    options?: Partial<RequestInit>
+    options?: Partial<RequestInit>,
   ) {
     await this.auth.checkTokenAndRefresh();
 

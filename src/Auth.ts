@@ -82,7 +82,7 @@ export class Auth {
           USERNAME: this.email,
           SRP_A,
         },
-      }
+      },
     );
 
     const dateNow = SRP.getNowString();
@@ -90,14 +90,14 @@ export class Auth {
       ChallengeParameters.USER_ID_FOR_SRP,
       password,
       ChallengeParameters.SRP_B,
-      ChallengeParameters.SALT
+      ChallengeParameters.SALT,
     );
     const signatureString = SRP.calculateSignature(
       hkdf,
       userPoolId,
       ChallengeParameters.USER_ID_FOR_SRP,
       ChallengeParameters.SECRET_BLOCK,
-      dateNow
+      dateNow,
     );
 
     const { AuthenticationResult } = await this.callAuth(
@@ -112,7 +112,7 @@ export class Auth {
           USERNAME: ChallengeParameters.USER_ID_FOR_SRP,
         },
         Session,
-      }
+      },
     );
 
     this.refreshToken = AuthenticationResult.RefreshToken as string;
@@ -131,7 +131,7 @@ export class Auth {
 
     if (!exp || !iat) {
       throw new Error(
-        '[Auth] Token decoding error; token timestamps are undefined.'
+        '[Auth] Token decoding error; token timestamps are undefined.',
       );
     }
 
@@ -174,12 +174,12 @@ export class Auth {
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
     if (!token || !refreshToken || !accessToken) {
       throw new Error(
-        '[Auth] Refresh API endpoint has changed response structure. Unable to find refreshed tokens'
+        '[Auth] Refresh API endpoint has changed response structure. Unable to find refreshed tokens',
       );
     }
 
@@ -203,7 +203,7 @@ export class Auth {
   public async checkTokenAndRefresh() {
     if (this.isTokenExpired()) {
       throw new Error(
-        '[Auth] token has expired. Re-run `.auth.login(password)`.'
+        '[Auth] token has expired. Re-run `.auth.login(password)`.',
       );
     }
 
@@ -217,7 +217,7 @@ export class Auth {
   private isTokenExpired() {
     if (!this.tokenExp) {
       throw new Error(
-        '[Auth] Unknown token Expiry. Did you forget to run `.auth.login(password)`?'
+        '[Auth] Unknown token Expiry. Did you forget to run `.auth.login(password)`?',
       );
     }
 
@@ -228,7 +228,7 @@ export class Auth {
   private isTokenDueRefresh() {
     if (!this.tokenExp) {
       throw new Error(
-        '[Auth] Unknown token Expiry. Did you forget to run `.auth.login(password)`?'
+        '[Auth] Unknown token Expiry. Did you forget to run `.auth.login(password)`?',
       );
     }
 

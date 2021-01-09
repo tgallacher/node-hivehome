@@ -3,14 +3,13 @@
  * @module Hivehome
  */
 import { HiveFetch } from './HiveFetch';
-
 import { Auth } from './Auth';
 import { Products } from './Products';
 import { Heating } from './Heating';
 
 /**
  * Main Hivehome SDK entrypoint.
- * Use this object to instigate access to Hivehome resources.
+ * Use this object to access Hivehome resources.
  */
 export class Hivehome {
   /** Authenticate with Hivehome's API. */

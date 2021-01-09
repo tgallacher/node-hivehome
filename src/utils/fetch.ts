@@ -8,17 +8,17 @@ import merge from 'lodash.merge';
 /**
  * Native fetch with basic HTTP error handling.
  */
-export const fetch = async (
+export const fetch = async <T>(
   url: string,
-  options: Partial<RequestInit> = {}
-) => {
+  options: Partial<RequestInit> = {},
+): Promise<T | T[]> => {
   const reqOpts = merge(
     {
       headers: {
         'Content-Type': 'application/json',
       },
     },
-    options
+    options,
   );
 
   const resp = await nodefetch(url, reqOpts);
